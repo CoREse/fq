@@ -60,3 +60,133 @@ void SeqId::resolve(const char * Id)
 	next(Id,Length,Last,Pos);
 	sample_number=atoi(Id+Last);
 }
+FqEntry::FqEntry(const char * FileName)
+:ReadFile(NULL),Id(NULL),Seq(NULL),Qid(NULL),Q(NULL)
+{
+	if (FileName!=NULL)
+	{
+		ReadFile=fopen(FileName,"r");
+		if (ReadFile==NULL) fprintf(stderr,"Open read file %s failed!",FileName);
+	}
+	Id=(char *)malloc(LINE_BUFFER_SIZE);
+	Seq=(char *)malloc(LINE_BUFFER_SIZE);
+	Qid=(char *)malloc(LINE_BUFFER_SIZE);
+	Q=(char *)malloc(LINE_BUFFER_SIZE);
+}
+
+FqEntry::~FqEntry()
+{
+	if (ReadFile!=NULL) fclose(ReadFile);
+	if (Id!=NULL) free(Id);
+	if (Seq!=NULL) free(Seq);
+	if (Qid!=NULL) free(Qid);
+	if (Q!=NULL) free(Q);
+}
+
+FqEntry& FqEntry::operator=(FqEntry& B)
+{
+	Id=B.Id;
+	Seq=B.Seq;
+	Qid=B.Qid;
+	Q=B.Q;
+	ReadFile=B.ReadFile;
+	B.Id=NULL;
+	B.Seq=NULL;
+	B.Qid=NULL;
+	B.Q=NULL;
+	B.ReadFile=NULL;
+	return *this;
+}
+
+FqEntry::FqEntry(FqEntry& B)
+{
+	*this=B;
+}
+
+FqEntry& FqEntry::copy(const FqEntry& B)
+{
+	allocate();
+	strcpy(Id,B.Id);
+	strcpy(Seq,B.Seq);
+	strcpy(Qid,B.Qid);
+	strcpy(Q,B.Q);
+	return *this;
+}
+
+void FqEntry::allocate()
+{
+	if (Id==NULL)
+	Id=(char *)malloc(LINE_BUFFER_SIZE);
+	if (Seq==NULL)
+	Seq=(char *)malloc(LINE_BUFFER_SIZE);
+	if (Qid==NULL)
+	Qid=(char *)malloc(LINE_BUFFER_SIZE);
+	if (Q==NULL)
+	Q=(char *)malloc(LINE_BUFFER_SIZE);	
+}
+
+void FqEntry::close()
+{
+	if (ReadFile!=NULL)
+	{
+		if (0==fclose(ReadFile)) ReadFile=NULL;
+		else fprintf(stderr, "Close fastQ file failed!");
+	}	
+}
+
+void FqEntry::open(const char *FileName)
+{
+	close();
+	if (ReadFile!=NULL)
+	{
+		fprintf(stderr, "Can't open new read file since can't close the old read file.");
+		return;
+	}
+	ReadFile=fopen(FileName,"r");
+	if (ReadFile == NULL)
+		fprintf(stderr, "Open read file %s failed!", FileName);
+}
+
+bool FqEntry::readNext()
+{
+	if (ReadFile==NULL)
+	{
+		fprintf(stderr, "Can't read next entry since no ReadFile opened!");
+		return false;
+	}
+	if (feof(ReadFile)) return false;
+	unsigned L=0;
+	if (fgets(Id,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
+	L=strlen(Id)-1;
+	if (Id[L]=='\n') Id[L]='\0';
+	else
+	{
+		fprintf(stderr, "Line too long!");
+		throw -100;
+	}
+	if (fgets(Seq,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
+	L=strlen(Seq)-1;
+	if (Seq[L]=='\n') Seq[L]='\0';
+	else
+	{
+		fprintf(stderr, "Line too long!");
+		throw -100;
+	}
+	if (fgets(Qid,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
+	L=strlen(Qid)-1;
+	if (Qid[L]=='\n') Qid[L]='\0';
+	else
+	{
+		fprintf(stderr, "Line too long!");
+		throw -100;
+	}
+	if (fgets(Q,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
+	L=strlen(Q)-1;
+	if (Q[L]=='\n') Q[L]='\0';
+	else
+	{
+		fprintf(stderr, "Line too long!");
+		throw -100;
+	}
+	return true;
+}

@@ -2,6 +2,7 @@
 #define CRE_BIO_FQ
 
 #include <string>
+#include <stdio.h>
 
 class SeqId
 {
@@ -18,13 +19,21 @@ class SeqId
 
 class FqEntry
 {
-	char* Id, Seq, Qid, Q;
+	FILE* ReadFile;
+	void allocate();
 	public:
-		FqEntry();
+		char* Id, *Seq, *Qid, *Q;
+		FqEntry(const char * FileName=NULL);
 		~FqEntry();
 		FqEntry(FqEntry&);//it's more like move than copy
-		FqEntry& duplicate() const;//This is copy
+		FqEntry& copy(const FqEntry&);//This is copy, will not copy the ReadFile
 		FqEntry& operator=(FqEntry&);
+		void close();
+		void open(const char * FileName);
+		bool readNext();//return true if success
+	private:
+		FqEntry(const FqEntry&);
+		FqEntry & operator=(const FqEntry&);
 };
 
 class fq
