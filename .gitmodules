@@ -1,0 +1,3 @@
+[submodule "dnaseq"]
+	path = dnaseq
+	url = https://github.com/CoREse/dnaseq

@@ -8,13 +8,17 @@ FQ_OBJS=fq.o
 FQ_HEADERS=fq.h
 EXAMPLE_OBJS=example/test.o
 FQ=fq.a
+DNASEQ=dnaseq/dnaseq.a
 
 libs:$(FQ)
 
 all: $(FQ) test
 
-$(FQ):$(FQ_OBJS)
-	$(AR) -rc $@ $(FQ_OBJS)
+$(DNASEQ): dnaseq/*
+	cd dnaseq && make
+
+$(FQ):$(FQ_OBJS) dnaseq/dnaseq.o
+	$(AR) -rc $@ $^
 
 test: $(EXAMPLE_OBJS) $(FQ)
 	$(LINK.cpp) $^ -o $@

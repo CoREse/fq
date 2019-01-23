@@ -14,7 +14,7 @@ int main (int argc, char **argv)
     {
         if (!First) printf("\n");
         First=false;
-        printf("%s\n%s\n%s\n%s",Read.Id,Read.Seq,Read.Qid,Read.Q);
+        printf("%s\n%s\n%s\n%s",Read.Id,Read.Seq.seq,Read.Qid,Read.Q);
     }
     return 0;
 }

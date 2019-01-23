@@ -61,7 +61,7 @@ void SeqId::resolve(const char * Id)
 	sample_number=atoi(Id+Last);
 }
 FqEntry::FqEntry(const char * FileName)
-:ReadFile(NULL),Id(NULL),Seq(NULL),Qid(NULL),Q(NULL)
+:ReadFile(NULL),Id(NULL),Seq(LINE_BUFFER_SIZE),Qid(NULL),Q(NULL)
 {
 	if (FileName!=NULL)
 	{
@@ -69,7 +69,6 @@ FqEntry::FqEntry(const char * FileName)
 		if (ReadFile==NULL) fprintf(stderr,"Open read file %s failed!",FileName);
 	}
 	Id=(char *)malloc(LINE_BUFFER_SIZE);
-	Seq=(char *)malloc(LINE_BUFFER_SIZE);
 	Qid=(char *)malloc(LINE_BUFFER_SIZE);
 	Q=(char *)malloc(LINE_BUFFER_SIZE);
 }
@@ -78,7 +77,6 @@ FqEntry::~FqEntry()
 {
 	if (ReadFile!=NULL) fclose(ReadFile);
 	if (Id!=NULL) free(Id);
-	if (Seq!=NULL) free(Seq);
 	if (Qid!=NULL) free(Qid);
 	if (Q!=NULL) free(Q);
 }
@@ -86,12 +84,11 @@ FqEntry::~FqEntry()
 FqEntry& FqEntry::operator=(FqEntry& B)
 {
 	Id=B.Id;
-	Seq=B.Seq;
+	Seq.move(B.Seq);
 	Qid=B.Qid;
 	Q=B.Q;
 	ReadFile=B.ReadFile;
 	B.Id=NULL;
-	B.Seq=NULL;
 	B.Qid=NULL;
 	B.Q=NULL;
 	B.ReadFile=NULL;
@@ -107,7 +104,7 @@ FqEntry& FqEntry::copy(const FqEntry& B)
 {
 	allocate();
 	strcpy(Id,B.Id);
-	strcpy(Seq,B.Seq);
+	Seq=B.Seq;
 	strcpy(Qid,B.Qid);
 	strcpy(Q,B.Q);
 	return *this;
@@ -117,8 +114,6 @@ void FqEntry::allocate()
 {
 	if (Id==NULL)
 	Id=(char *)malloc(LINE_BUFFER_SIZE);
-	if (Seq==NULL)
-	Seq=(char *)malloc(LINE_BUFFER_SIZE);
 	if (Qid==NULL)
 	Qid=(char *)malloc(LINE_BUFFER_SIZE);
 	if (Q==NULL)
@@ -164,9 +159,9 @@ bool FqEntry::readNext()
 		fprintf(stderr, "Line too long!");
 		throw -100;
 	}
-	if (fgets(Seq,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
-	L=strlen(Seq)-1;
-	if (Seq[L]=='\n') Seq[L]='\0';
+	if (fgets(Seq.seq,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
+	L=strlen(Seq.seq)-1;
+	if (Seq.seq[L]=='\n') Seq.seq[L]='\0';
 	else
 	{
 		fprintf(stderr, "Line too long!");

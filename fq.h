@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdio.h>
+#include "dnaseq/dnaseq.h"
 
 class SeqId
 {
@@ -22,7 +23,8 @@ class FqEntry
 	FILE* ReadFile;
 	void allocate();
 	public:
-		char* Id, *Seq, *Qid, *Q;
+		char* Id, *Qid, *Q;
+		DNASeq Seq;
 		FqEntry(const char * FileName=NULL);
 		~FqEntry();
 		FqEntry(FqEntry&);//it's more like move than copy
