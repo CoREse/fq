@@ -81,6 +81,7 @@ FqEntry::~FqEntry()
 	if (Q!=NULL) free(Q);
 }
 
+/*
 FqEntry& FqEntry::operator=(FqEntry& B)
 {
 	Id=B.Id;
@@ -99,6 +100,7 @@ FqEntry::FqEntry(FqEntry& B)
 {
 	*this=B;
 }
+*/
 
 FqEntry& FqEntry::copy(const FqEntry& B)
 {
@@ -154,7 +156,7 @@ bool FqEntry::readNext()
 	if (fgets(Id,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
 	L=strlen(Id)-1;
 	if (Id[L]=='\n') Id[L]='\0';
-	else
+	else if (feof(ReadFile)!=true)
 	{
 		fprintf(stderr, "Line too long!");
 		throw -100;
@@ -162,7 +164,7 @@ bool FqEntry::readNext()
 	if (fgets(Seq.seq,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
 	L=strlen(Seq.seq)-1;
 	if (Seq.seq[L]=='\n') Seq.seq[L]='\0';
-	else
+	else if (feof(ReadFile)!=true) 
 	{
 		fprintf(stderr, "Line too long!");
 		throw -100;
@@ -170,7 +172,7 @@ bool FqEntry::readNext()
 	if (fgets(Qid,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
 	L=strlen(Qid)-1;
 	if (Qid[L]=='\n') Qid[L]='\0';
-	else
+	else if (feof(ReadFile)!=true)
 	{
 		fprintf(stderr, "Line too long!");
 		throw -100;
@@ -178,7 +180,7 @@ bool FqEntry::readNext()
 	if (fgets(Q,LINE_BUFFER_SIZE,ReadFile)==NULL) return false;
 	L=strlen(Q)-1;
 	if (Q[L]=='\n') Q[L]='\0';
-	else
+	else if (feof(ReadFile)!=true)
 	{
 		fprintf(stderr, "Line too long!");
 		throw -100;

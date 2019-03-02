@@ -27,9 +27,9 @@ class FqEntry
 		DNASeq Seq;
 		FqEntry(const char * FileName=NULL);
 		~FqEntry();
-		FqEntry(FqEntry&);//it's more like move than copy
+		//FqEntry(FqEntry&);//it's more like move than copy
 		FqEntry& copy(const FqEntry&);//This is copy, will not copy the ReadFile
-		FqEntry& operator=(FqEntry&);
+		//FqEntry& operator=(FqEntry&);
 		void close();
 		void open(const char * FileName);
 		bool readNext();//return true if success
