@@ -188,7 +188,7 @@ bool FqEntry::readNext()
 	return true;
 }
 
-unsigned int fieldify(char * Fields, const char ** Result, char Separate)
+unsigned int fieldify(char * Fields, char ** Result, char Separate)
 {
 	if (Fields[0]=='\0') return 0;
 	unsigned i=0,n=0;

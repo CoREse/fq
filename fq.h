@@ -43,6 +43,6 @@ class fq
 
 };
 
-unsigned int fieldify(char * Fields, const char **Result, char Separate=':');
+unsigned int fieldify(char * Fields, char **Result, char Separate=':');
 
 #endif
