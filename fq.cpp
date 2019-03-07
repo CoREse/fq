@@ -187,3 +187,19 @@ bool FqEntry::readNext()
 	}
 	return true;
 }
+
+unsigned int fieldify(char * Fields, const char ** Result, char Separate)
+{
+	if (Fields[0]=='\0') return 0;
+	unsigned i=0,n=0;
+	Result[n++]=Fields;
+	while(Fields[i]!='\0')
+	{
+		if (Fields[i]==Separate)
+		{
+			Result[n++]=Fields+i+1;
+			Fields[i]='\0';
+		}
+	}
+	return n;
+}
