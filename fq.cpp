@@ -200,6 +200,7 @@ unsigned int fieldify(char * Fields, char ** Result, char Separate)
 			Result[n++]=Fields+i+1;
 			Fields[i]='\0';
 		}
+		++i;
 	}
 	return n;
 }
