@@ -33,6 +33,7 @@ class FqEntry
 		void close();
 		void open(const char * FileName);
 		bool readNext();//return true if success
+		void rewind();
 	private:
 		FqEntry(const FqEntry&);
 		FqEntry & operator=(const FqEntry&);

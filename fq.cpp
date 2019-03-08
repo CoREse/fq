@@ -204,3 +204,8 @@ unsigned int fieldify(char * Fields, char ** Result, char Separate)
 	}
 	return n;
 }
+
+void FqEntry::rewind()
+{
+	if (ReadFile!=NULL) std::rewind(ReadFile);
+}
